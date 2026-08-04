@@ -7,7 +7,20 @@ public class BankingApp {
 
     }
     // 1. Show balance method
-    // 2. Deposit money method - Brian
+    // 2. Deposit money method
+    public interface Transactable{
+        boolean deposit(double amount);
+    }
+    public static class CheckAccount implements Transactable{
+        private double balance;
+
+        @Override
+        public boolean deposit(double amount) {
+            if(amount < 0) return false;
+            balance += amount;
+            return true;
+        }
+    }
 
 
     // 3. Withdraw money method
