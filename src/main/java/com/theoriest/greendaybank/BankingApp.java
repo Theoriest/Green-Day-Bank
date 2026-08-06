@@ -235,6 +235,7 @@ public class BankingApp {
         System.out.print("\n Which registered user would you like to send the money to : ");
 
         // validate recipient
+        if (!scanner.hasNextLine()) return " Recipient can not be blank";
         String recipientName = scanner.nextLine().trim();
 
         if (recipientName.isEmpty()) return " Recipient can not be blank";
