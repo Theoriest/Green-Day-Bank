@@ -80,7 +80,7 @@ public class BankingApp {
         while (running) {
             // Login State
             // Ask for the user who wants to login
-            System.out.println("Enter your name to log in: ");
+            System.out.print("Enter your name to log in: ");
 
             User currentUser = null;
             while (currentUser == null) {
@@ -193,12 +193,12 @@ public class BankingApp {
     }
 
     private static void showBalance(User user) {
-        System.out.println("Cash: $" + user.getCash());
-        System.out.println("Savings: $" + user.getSavingsBalance());
-        System.out.println("Investment: $" + user.getInvestmentBalance());
-        System.out.println("Low Risk Fund: $" + user.getFunds().get("LOW_RISK"));
-        System.out.println("Medium Risk Fund: $" + user.getFunds().get("MEDIUM_RISK"));
-        System.out.println("High Risk Fund: $" + user.getFunds().get("HIGH_RISK"));
+        System.out.println("\n Cash: $" + user.getCash());
+        System.out.println(" Savings: $" + user.getSavingsBalance());
+        System.out.println(" Investment: $" + user.getInvestmentBalance());
+        System.out.println(" Low Risk Fund: $" + user.getFunds().get("LOW_RISK"));
+        System.out.println(" Medium Risk Fund: $" + user.getFunds().get("MEDIUM_RISK"));
+        System.out.println(" High Risk Fund: $" + user.getFunds().get("HIGH_RISK"));
     }
 
     private static void depositMoney(User user, Scanner scanner) {
