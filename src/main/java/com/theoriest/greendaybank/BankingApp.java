@@ -299,6 +299,10 @@ public class BankingApp {
         if (!scanner.hasNextLine()) return "";
         String choice = scanner.nextLine().trim();
 
+        if (!choice.equals("1") && !choice.equals("2")) {
+        return "\nInvalid choice selection. Try again";
+    }
+
         System.out.print("Enter the amount to transfer: ");
 
         if (!scanner.hasNextLine()) return "";
