@@ -133,7 +133,6 @@ public class BankingApp {
                     case 3:
                         // Withdraw money (Savings -> Cash)
                         System.out.println(withdrawMoney(currentUser, scanner));
-                        System.out.println(); // Adds a blank line after the operation completes
                         break;
                     case 4:
                         // Send money to a person
@@ -216,10 +215,10 @@ public class BankingApp {
     }
 
    private static String withdrawMoney(User user, Scanner scanner) {
-    System.out.print("Enter the amount to withdraw from your savings account: ");
+    System.out.print(" Enter the amount to withdraw from your savings account: ");
 
     if (!scanner.hasNextLine()) {
-        return "\nAmount to withdraw can not be empty";
+        return "\n Amount to withdraw can not be empty";
     }
 
     try {
@@ -227,12 +226,12 @@ public class BankingApp {
         if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getSavingsBalance().compareTo(amount) >= 0) {
             user.setSavingsBalance(user.getSavingsBalance().subtract(amount));
             user.setCash(user.getCash().add(amount));
-            return "\nWithdrawal successful";
+            return "\n Withdrawal of $ " + amount + " successful";
         } else {
-            return "\nAmount to withdraw must be equal or less than balance";
+            return "\n Amount to withdraw must be equal or less than balance";
         }
     } catch (NumberFormatException ignored) {
-        return "\nInvalid input format";
+        return "\n Invalid input format";
     }
 }
 
@@ -292,18 +291,18 @@ public class BankingApp {
     }
 
     private static String transferBetweenAccounts(User user, Scanner scanner) {
-        System.out.println("1. Transfer from savings to investment");
-        System.out.println("2. Transfer from investment to savings");
-        System.out.println("Enter your choice: ");
+        System.out.println(" 1. Transfer from savings to investment");
+        System.out.println(" 2. Transfer from investment to savings");
+        System.out.println("\n Enter your choice: ");
 
         if (!scanner.hasNextLine()) return "";
         String choice = scanner.nextLine().trim();
 
         if (!choice.equals("1") && !choice.equals("2")) {
-        return "\nInvalid choice selection. Try again";
+        return "\n Invalid choice selection. Try again";
     }
 
-        System.out.print("Enter the amount to transfer: ");
+        System.out.print(" Enter the amount to transfer: ");
 
         if (!scanner.hasNextLine()) return "";
         try {
@@ -313,23 +312,23 @@ public class BankingApp {
             if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getSavingsBalance().compareTo(amount) >= 0) {
                 user.setSavingsBalance(user.getSavingsBalance().subtract(amount));
                 user.setInvestmentBalance(user.getInvestmentBalance().add(amount));
-                return "\nYou have successfully transferred " + amount + " to investment account.";
+                return "\n You have successfully transferred " + amount + " to investment account.";
             } else {
-                return "\nInsufficient funds in savings account.";
+                return "\n Insufficient funds in savings account.";
             }
         } else if (choice.equals("2")) {
             if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getInvestmentBalance().compareTo(amount) >= 0) {
                 user.setInvestmentBalance(user.getInvestmentBalance().subtract(amount));
                 user.setSavingsBalance(user.getSavingsBalance().add(amount));
-                return "\nYou have successfully transferred " + amount + " to savings account.";
+                return "\n You have successfully transferred " + amount + " to savings account.";
             } else {
-                return "\nInsufficient funds in investment account. Check balance and try again. ";
+                return "\n Insufficient funds in investment account. Check balance and try again. ";
             }
         } else {
-            return "\nInvalid choice selection.";
+            return "\n Invalid choice selection.";
         }
     } catch (NumberFormatException e) {
-        return "\nInvalid input format.";
+        return "\n Invalid input format.";
     }
     }
 
