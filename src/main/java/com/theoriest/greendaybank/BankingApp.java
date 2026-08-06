@@ -152,7 +152,7 @@ public class BankingApp {
                         break;
                     case 8:
                         // Logout
-                        System.out.println(" Goodbye " + currentUser.getName() + " Thank you for using Green Banking App!");
+                        System.out.println("\n Goodbye " + currentUser.getName() + " Thank you for using Green Banking App!");
                         sessionActive = false;
                         break;
                     case 9:
@@ -332,9 +332,9 @@ public class BankingApp {
     }
 
     private static String transferBetweenAccounts(User user, Scanner scanner) {
-        System.out.println(" 1. Transfer from savings to investment");
+        System.out.println("\n 1. Transfer from savings to investment");
         System.out.println(" 2. Transfer from investment to savings");
-        System.out.println("\n Enter your choice: ");
+        System.out.print("\n Enter your choice: ");
 
         if (!scanner.hasNextLine()) return "";
         String choice = scanner.nextLine().trim();
@@ -353,7 +353,7 @@ public class BankingApp {
             if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getSavingsBalance().compareTo(amount) >= 0) {
                 user.setSavingsBalance(user.getSavingsBalance().subtract(amount));
                 user.setInvestmentBalance(user.getInvestmentBalance().add(amount));
-                return "\n You have successfully transferred " + amount + " to investment account.";
+                return "\n You have successfully transferred $" + amount + " to investment account.";
             } else {
                 return "\n Insufficient funds in savings account.";
             }
@@ -361,7 +361,7 @@ public class BankingApp {
             if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getInvestmentBalance().compareTo(amount) >= 0) {
                 user.setInvestmentBalance(user.getInvestmentBalance().subtract(amount));
                 user.setSavingsBalance(user.getSavingsBalance().add(amount));
-                return "\n You have successfully transferred " + amount + " to savings account.";
+                return "\n You have successfully transferred $" + amount + " to savings account.";
             } else {
                 return "\n Insufficient funds in investment account. Check balance and try again. ";
             }
