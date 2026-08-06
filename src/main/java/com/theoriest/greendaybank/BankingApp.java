@@ -159,7 +159,8 @@ public class BankingApp {
                         // Exit (Gracefully without System.exit)
                         sessionActive = false;
                         running = false;
-                        System.out.print("Bye. thank you for using the Green Day Bank");
+                        System.out.println("\nThank you for using our Green Day Banking app. Bye!");
+                        System.out.println();
                         break;
                     default:
                         break;
