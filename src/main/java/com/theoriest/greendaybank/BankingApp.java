@@ -132,7 +132,7 @@ public class BankingApp {
                         break;
                     case 3:
                         // Withdraw money (Savings -> Cash)
-                        withdrawMoney(currentUser, scanner);
+                        System.out.println(withdrawMoney(currentUser, scanner));
                         break;
                     case 4:
                         // Send money to a person
@@ -144,7 +144,7 @@ public class BankingApp {
                         break;
                     case 6:
                         // Transfer between accounts (Savings <-> Investment)
-                        transferBetweenAccounts(currentUser, scanner);
+                        System.out.println(transferBetweenAccounts(currentUser, scanner));
                         break;
                     case 7:
                         // Withdraw all investments
@@ -159,6 +159,8 @@ public class BankingApp {
                         // Exit (Gracefully without System.exit)
                         sessionActive = false;
                         running = false;
+                        System.out.println("\nThank you for using our Green Day Banking app. Bye!");
+                        System.out.println();
                         break;
                     default:
                         break;
@@ -223,17 +225,27 @@ public class BankingApp {
             System.out.println(" Invalid amount entered.");
         }
     }
-    
-    private static void withdrawMoney(User user, Scanner scanner) {
-        if (!scanner.hasNextLine()) return;
-        try {
-            BigDecimal amount = new BigDecimal(scanner.nextLine().trim());
-            if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getSavingsBalance().compareTo(amount) >= 0) {
-                user.setSavingsBalance(user.getSavingsBalance().subtract(amount));
-                user.setCash(user.getCash().add(amount));
-            }
-        } catch (NumberFormatException ignored) {}
+
+   private static String withdrawMoney(User user, Scanner scanner) {
+    System.out.print(" Enter the amount to withdraw from your savings account: ");
+
+    if (!scanner.hasNextLine()) {
+        return "\n Amount to withdraw can not be empty";
     }
+
+    try {
+        BigDecimal amount = new BigDecimal(scanner.nextLine().trim());
+        if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getSavingsBalance().compareTo(amount) >= 0) {
+            user.setSavingsBalance(user.getSavingsBalance().subtract(amount));
+            user.setCash(user.getCash().add(amount));
+            return "\n Withdrawal of $ " + amount + " successful";
+        } else {
+            return "\n Amount to withdraw must be equal or less than balance";
+        }
+    } catch (NumberFormatException ignored) {
+        return "\n Invalid input format";
+    }
+}
 
     private static String sendMoney(User user, Map<String, User> users, Scanner scanner) {
         System.out.println("\n The following are registered users :");
@@ -320,25 +332,46 @@ public class BankingApp {
         }
     }
 
-    private static void transferBetweenAccounts(User user, Scanner scanner) {
-        if (!scanner.hasNextLine()) return;
-        String direction = scanner.nextLine().trim();
+    private static String transferBetweenAccounts(User user, Scanner scanner) {
+        System.out.println(" 1. Transfer from savings to investment");
+        System.out.println(" 2. Transfer from investment to savings");
+        System.out.println("\n Enter your choice: ");
 
-        if (!scanner.hasNextLine()) return;
+        if (!scanner.hasNextLine()) return "";
+        String choice = scanner.nextLine().trim();
+
+        if (!choice.equals("1") && !choice.equals("2")) {
+        return "\n Invalid choice selection. Try again";
+    }
+
+        System.out.print(" Enter the amount to transfer: ");
+
+        if (!scanner.hasNextLine()) return "";
         try {
             BigDecimal amount = new BigDecimal(scanner.nextLine().trim());
-            if (direction.equalsIgnoreCase("SAVINGS_TO_INVESTMENT")) {
-                if (user.getSavingsBalance().compareTo(amount) >= 0 && amount.compareTo(BigDecimal.ZERO) > 0) {
-                    user.setSavingsBalance(user.getSavingsBalance().subtract(amount));
-                    user.setInvestmentBalance(user.getInvestmentBalance().add(amount));
-                }
-            } else if (direction.equalsIgnoreCase("INVESTMENT_TO_SAVINGS")) {
-                if (user.getInvestmentBalance().compareTo(amount) >= 0 && amount.compareTo(BigDecimal.ZERO) > 0) {
-                    user.setInvestmentBalance(user.getInvestmentBalance().subtract(amount));
-                    user.setSavingsBalance(user.getSavingsBalance().add(amount));
-                }
+
+            if (choice.equals("1")) {
+            if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getSavingsBalance().compareTo(amount) >= 0) {
+                user.setSavingsBalance(user.getSavingsBalance().subtract(amount));
+                user.setInvestmentBalance(user.getInvestmentBalance().add(amount));
+                return "\n You have successfully transferred " + amount + " to investment account.";
+            } else {
+                return "\n Insufficient funds in savings account.";
             }
-        } catch (NumberFormatException ignored) {}
+        } else if (choice.equals("2")) {
+            if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getInvestmentBalance().compareTo(amount) >= 0) {
+                user.setInvestmentBalance(user.getInvestmentBalance().subtract(amount));
+                user.setSavingsBalance(user.getSavingsBalance().add(amount));
+                return "\n You have successfully transferred " + amount + " to savings account.";
+            } else {
+                return "\n Insufficient funds in investment account. Check balance and try again. ";
+            }
+        } else {
+            return "\n Invalid choice selection.";
+        }
+    } catch (NumberFormatException e) {
+        return "\n Invalid input format.";
+    }
     }
 
     private static String withdrawAllInvestments(User user) {
