@@ -132,8 +132,8 @@ public class BankingApp {
                         break;
                     case 3:
                         // Withdraw money (Savings -> Cash)
-                        withdrawMoney(currentUser, scanner);
-                        System.out.println(" Enter amount to withdraw" );
+                        System.out.println(withdrawMoney(currentUser, scanner));
+                        System.out.println(); // Adds a blank line after the operation completes
                         break;
                     case 4:
                         // Send money to a person
@@ -215,16 +215,26 @@ public class BankingApp {
         } catch (NumberFormatException ignored) {}
     }
 
-    private static void withdrawMoney(User user, Scanner scanner) {
-        if (!scanner.hasNextLine()) return;
-        try {
-            BigDecimal amount = new BigDecimal(scanner.nextLine().trim());
-            if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getSavingsBalance().compareTo(amount) >= 0) {
-                user.setSavingsBalance(user.getSavingsBalance().subtract(amount));
-                user.setCash(user.getCash().add(amount));
-            }
-        } catch (NumberFormatException ignored) {}
+   private static String withdrawMoney(User user, Scanner scanner) {
+    System.out.print("Enter the amount to withdraw from your savings account: ");
+
+    if (!scanner.hasNextLine()) {
+        return "\nAmount to withdraw can not be empty";
     }
+
+    try {
+        BigDecimal amount = new BigDecimal(scanner.nextLine().trim());
+        if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getSavingsBalance().compareTo(amount) >= 0) {
+            user.setSavingsBalance(user.getSavingsBalance().subtract(amount));
+            user.setCash(user.getCash().add(amount));
+            return "\nWithdrawal successful";
+        } else {
+            return "\nAmount to withdraw must be equal or less than balance";
+        }
+    } catch (NumberFormatException ignored) {
+        return "\nInvalid input format";
+    }
+}
 
     private static String sendMoney(User user, Map<String, User> users, Scanner scanner) {
         System.out.println("\n The following are registered users :");
