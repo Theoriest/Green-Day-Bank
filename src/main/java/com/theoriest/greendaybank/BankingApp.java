@@ -152,6 +152,7 @@ public class BankingApp {
                         break;
                     case 8:
                         // Logout
+                        System.out.println("Goodbye " + currentUser.getName() + " Thank you for using Green Banking App!");
                         sessionActive = false;
                         break;
                     case 9:
@@ -201,26 +202,25 @@ public class BankingApp {
         System.out.println(" High Risk Fund: $" + user.getFunds().get("HIGH_RISK"));
     }
 
+    // Brian's Section
     private static void depositMoney(User user, Scanner scanner) {
-        if (!scanner.hasNextLine()) return;
+        System.out.print("Enter amount to be deposited to savings account: $");
+        String input = scanner.nextLine().trim();
+
         try {
-            BigDecimal amount = new BigDecimal(scanner.nextLine().trim());
+            BigDecimal amount = new BigDecimal(input);
             if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getCash().compareTo(amount) >= 0) {
                 user.setCash(user.getCash().subtract(amount));
                 user.setSavingsBalance(user.getSavingsBalance().add(amount));
+                System.out.println("Deposit Successful!");
+            } else if (user.getCash().compareTo(amount) < 0) {
+                System.out.println("Insufficient cash balance.");
+            } else {
+                System.out.println("Amount must be greater than zero. ");
             }
-        } catch (NumberFormatException ignored) {}
-    }
-
-    private static void withdrawMoney(User user, Scanner scanner) {
-        if (!scanner.hasNextLine()) return;
-        try {
-            BigDecimal amount = new BigDecimal(scanner.nextLine().trim());
-            if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getSavingsBalance().compareTo(amount) >= 0) {
-                user.setSavingsBalance(user.getSavingsBalance().subtract(amount));
-                user.setCash(user.getCash().add(amount));
-            }
-        } catch (NumberFormatException ignored) {}
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid amount entered.");
+        }
     }
 
     private static String sendMoney(User user, Map<String, User> users, Scanner scanner) {
@@ -262,20 +262,49 @@ public class BankingApp {
             return " Amount can only be a number ";
         }
     }
-
+    // Brian's Section
     private static void investInFunds(User user, Scanner scanner) {
-        if (!scanner.hasNextLine()) return;
-        String fundType = scanner.nextLine().trim();
-        if (!user.getFunds().containsKey(fundType)) return;
+        String choice;
 
-        if (!scanner.hasNextLine()) return;
-        try {
-            BigDecimal amount = new BigDecimal(scanner.nextLine().trim());
-            if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getInvestmentBalance().compareTo(amount) >= 0) {
-                user.setInvestmentBalance(user.getInvestmentBalance().subtract(amount));
-                user.getFunds().put(fundType, user.getFunds().get(fundType).add(amount));
+        System.out.println("""
+                Available funds:
+                LOW_RISK
+                MEDIUM_RISK
+                HIGH_RISK
+                """);
+
+        System.out.print("Enter fund to invest in: ");
+        choice = scanner.nextLine().toUpperCase().trim();
+
+        if(!user.getFunds().containsKey(choice)){
+            System.out.println("Invalid fund selected.");
+            return;
+        }
+
+        System.out.print("Enter amount to invest in: $");
+        String value = scanner.nextLine().trim();
+
+        try{
+            BigDecimal amount = new BigDecimal(value);
+            if(amount.compareTo(BigDecimal.ZERO) <= 0) {
+                System.out.println("Amount must be greater than zero.");
+                return;
             }
-        } catch (NumberFormatException ignored) {}
+                // checking if user has sufficient funds in their Investment Account
+                // or move directly from Savings
+                if(user.getInvestmentBalance().compareTo(amount) >= 0){
+                    user.setInvestmentBalance(user.getInvestmentBalance().subtract(amount));
+                    BigDecimal currentFundBalance = user.getFunds().get(choice);
+                    user.getFunds().put(choice, currentFundBalance.add(amount));
+                    System.out.println("Successfully Invested $" + amount + " in " + choice + " Fund");
+                }else{
+                    System.out.println("Insufficient funds in Investment account. Please transfer funds to Investment account first.");
+                }
+
+            }catch (NumberFormatException e){
+            System.out.println("Invalid amount entered");
+
+        }
     }
 
     private static void transferBetweenAccounts(User user, Scanner scanner) {
