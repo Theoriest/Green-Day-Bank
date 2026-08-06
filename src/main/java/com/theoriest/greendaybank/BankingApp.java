@@ -306,6 +306,6 @@ public class BankingApp {
         }
         user.setInvestmentBalance(user.getInvestmentBalance().add(totalFunds));
 
-        return " All investments, a sum of " + totalFunds + " was deposited in your savings account";
+        return "All investments totaling $" + totalFunds.setScale(2, RoundingMode.HALF_UP) + " were deposited in your investment account.";
     }
 }
