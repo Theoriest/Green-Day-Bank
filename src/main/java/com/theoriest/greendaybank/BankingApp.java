@@ -222,6 +222,17 @@ public class BankingApp {
             System.out.println("Invalid amount entered.");
         }
     }
+    
+    private static void withdrawMoney(User user, Scanner scanner) {
+        if (!scanner.hasNextLine()) return;
+        try {
+            BigDecimal amount = new BigDecimal(scanner.nextLine().trim());
+            if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getSavingsBalance().compareTo(amount) >= 0) {
+                user.setSavingsBalance(user.getSavingsBalance().subtract(amount));
+                user.setCash(user.getCash().add(amount));
+            }
+        } catch (NumberFormatException ignored) {}
+    }
 
     private static String sendMoney(User user, Map<String, User> users, Scanner scanner) {
         System.out.println("\n The following are registered users :");
@@ -262,6 +273,7 @@ public class BankingApp {
             return " Amount can only be a number ";
         }
     }
+
     // Brian's Section
     private static void investInFunds(User user, Scanner scanner) {
         String choice;
