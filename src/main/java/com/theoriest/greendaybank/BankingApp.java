@@ -136,7 +136,7 @@ public class BankingApp {
                         break;
                     case 4:
                         // Send money to a person
-                        System.out.print(sendMoney(currentUser, users, scanner));
+                        System.out.println(sendMoney(currentUser, users, scanner));
                         break;
                     case 5:
                         // Invest in funds
