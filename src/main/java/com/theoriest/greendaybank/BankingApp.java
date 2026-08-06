@@ -133,6 +133,7 @@ public class BankingApp {
                     case 3:
                         // Withdraw money (Savings -> Cash)
                         withdrawMoney(currentUser, scanner);
+                        System.out.println(" Enter amount to withdraw" );
                         break;
                     case 4:
                         // Send money to a person
@@ -145,6 +146,7 @@ public class BankingApp {
                     case 6:
                         // Transfer between accounts (Savings <-> Investment)
                         transferBetweenAccounts(currentUser, scanner);
+                        System.out.println("Enter amount to transfer");
                         break;
                     case 7:
                         // Withdraw all investments
@@ -158,6 +160,7 @@ public class BankingApp {
                         // Exit (Gracefully without System.exit)
                         sessionActive = false;
                         running = false;
+                        System.out.print("Bye. thank you for using the Green Day Bank");
                         break;
                     default:
                         break;
