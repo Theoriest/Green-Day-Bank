@@ -127,7 +127,7 @@ public class BankingApp {
                         showBalance(currentUser);
                         break;
                     case 2:
-                        // Deposit money (Cash -> Savings)\
+                        // Deposit money (Cash -> Savings)
                         depositMoney(currentUser, scanner);
                         break;
                     case 3:
