@@ -206,8 +206,7 @@ public class BankingApp {
 
     // Brian's Section
     private static void depositMoney(User user, Scanner scanner) {
-        System.out.print(" Enter amount to be deposited to savings account: $");
-        System.out.print(""); // Ensure the prompt is displayed before reading input
+        System.out.print("\n Enter amount to be deposited to savings account: $");
         String input = scanner.nextLine().trim();
 
         try {
@@ -215,14 +214,14 @@ public class BankingApp {
             if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getCash().compareTo(amount) >= 0) {
                 user.setCash(user.getCash().subtract(amount));
                 user.setSavingsBalance(user.getSavingsBalance().add(amount));
-                System.out.println(" Deposit $" + amount + " Successful!");
+                System.out.println(" Deposit of $" + amount + " was Successful!");
             } else if (user.getCash().compareTo(amount) < 0) {
                 System.out.println(" Insufficient cash balance.");
             } else {
                 System.out.println(" Amount must be greater than zero. ");
             }
         } catch (NumberFormatException e) {
-            System.out.println(" Invalid amount entered.");
+            System.out.println(" Invalid amount entered. Amount must be a number");
         }
     }
 
@@ -291,11 +290,11 @@ public class BankingApp {
     private static void investInFunds(User user, Scanner scanner) {
         String choice;
        
-        System.out.println("""
-                Available funds:
-                LOW_RISK
-                MEDIUM_RISK
-                HIGH_RISK
+        System.out.println("\n"+"""
+                 Available funds:
+                 LOW_RISK
+                 MEDIUM_RISK
+                 HIGH_RISK
                 """);
 
         System.out.print(" Enter fund to invest in: ");
@@ -306,7 +305,7 @@ public class BankingApp {
             return;
         }
 
-        System.out.print(" Enter amount to invest in: $");
+        System.out.print(" Enter amount to invest: $");
         String value = scanner.nextLine().trim();
 
         try{
