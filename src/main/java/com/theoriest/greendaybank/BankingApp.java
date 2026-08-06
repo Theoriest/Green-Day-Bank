@@ -79,6 +79,9 @@ public class BankingApp {
 
         while (running) {
             // Login State
+            // Ask for the user who wants to login
+            System.out.println("Enter your name to log in: ");
+
             User currentUser = null;
             while (currentUser == null) {
                 if (!scanner.hasNextLine()) {
@@ -88,6 +91,8 @@ public class BankingApp {
                 String input = scanner.nextLine().trim();
                 if (users.containsKey(input)) {
                     currentUser = users.get(input);
+                    // Print welcome message for the current user.
+                    System.out.println("Welcome " + input);
                 } else {
                     // Handle invalid username gracefully
                     System.out.println("User not found. Please try again.");
@@ -131,7 +136,7 @@ public class BankingApp {
                         break;
                     case 4:
                         // Send money to a person
-                        sendMoney(currentUser, users, scanner);
+                        System.out.println(sendMoney(currentUser, users, scanner));
                         break;
                     case 5:
                         // Invest in funds
@@ -143,7 +148,7 @@ public class BankingApp {
                         break;
                     case 7:
                         // Withdraw all investments
-                        withdrawAllInvestments(currentUser);
+                        System.out.println(withdrawAllInvestments(currentUser));
                         break;
                     case 8:
                         // Logout
@@ -162,6 +167,7 @@ public class BankingApp {
     }
 
     private static void printMenu() {
+        System.out.println("");
         System.out.println("\n --- Banking App Menu ---");
         System.out.println("1. Show balance");
         System.out.println("2. Deposit money");
@@ -217,20 +223,44 @@ public class BankingApp {
         } catch (NumberFormatException ignored) {}
     }
 
-    private static void sendMoney(User user, Map<String, User> users, Scanner scanner) {
-        if (!scanner.hasNextLine()) return;
-        String recipientName = scanner.nextLine().trim();
-        if (!users.containsKey(recipientName)) return;
+    private static String sendMoney(User user, Map<String, User> users, Scanner scanner) {
+        System.out.println("\n The following are registered users :");
 
-        if (!scanner.hasNextLine()) return;
+        //print out available users
+        for(String registered : users.keySet()){
+            System.out.print(" " + registered + "\t");
+        }
+
+        // ask for recipient and store the value
+        System.out.print("\n Which registered user would you like to send the money to : ");
+
+        // validate recipient
+        if (!scanner.hasNextLine()) return " Recipient can not be blank";
+        String recipientName = scanner.nextLine().trim();
+
+        if (recipientName.isEmpty()) return " Recipient can not be blank";
+
+        if (!users.containsKey(recipientName)) return " User not found. You can only send money to registered users";
+
+        if (users.get(recipientName) == user)return " You can not send yourself money from your own account";
+
+        // Ask for amount and store the value
+        System.out.print("\n How much would you like to send to " + recipientName + ": ");
+        if (!scanner.hasNextLine()) return " Amount can not be empty";
         try {
             BigDecimal amount = new BigDecimal(scanner.nextLine().trim());
             if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getSavingsBalance().compareTo(amount) >= 0) {
                 user.setSavingsBalance(user.getSavingsBalance().subtract(amount));
                 User recipient = users.get(recipientName);
                 recipient.setSavingsBalance(recipient.getSavingsBalance().add(amount));
+                return " " + amount + " sent to " + recipientName;
             }
-        } catch (NumberFormatException ignored) {}
+            else{
+                return " User can not send an amount greater than the balance in their savings account";
+            }
+        } catch (NumberFormatException ignored) {
+            return " Amount can only be a number ";
+        }
     }
 
     private static void investInFunds(User user, Scanner scanner) {
@@ -269,12 +299,14 @@ public class BankingApp {
         } catch (NumberFormatException ignored) {}
     }
 
-    private static void withdrawAllInvestments(User user) {
+    private static String withdrawAllInvestments(User user) {
         BigDecimal totalFunds = BigDecimal.ZERO;
         for (Map.Entry<String, BigDecimal> entry : user.getFunds().entrySet()) {
             totalFunds = totalFunds.add(entry.getValue());
             entry.setValue(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP));
         }
         user.setInvestmentBalance(user.getInvestmentBalance().add(totalFunds));
+
+        return "All investments totaling $" + totalFunds.setScale(2, RoundingMode.HALF_UP) + " were deposited in your investment account.";
     }
 }
