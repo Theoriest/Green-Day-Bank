@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 abstract class User {
-    protected static String name;
+    protected String name;
     protected BigDecimal cash;
     protected BigDecimal savingsBalance;
     protected BigDecimal investmentBalance;
@@ -24,7 +24,7 @@ abstract class User {
         this.funds.put("HIGH_RISK", BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP));
     }
 
-    public static String getName() {
+    public String getName() {
         return name;
     }
 
