@@ -79,11 +79,11 @@ public class BankingApp {
 
         while (running) {
             // Login State
-            // Ask for the user who wants to login
-            System.out.print("Enter your name to log in: ");
 
             User currentUser = null;
             while (currentUser == null) {
+                // Ask for the user who wants to login
+                System.out.println("\nEnter your name to log in: ");
                 if (!scanner.hasNextLine()) {
                     running = false;
                     break;
@@ -92,10 +92,10 @@ public class BankingApp {
                 if (users.containsKey(input)) {
                     currentUser = users.get(input);
                     // Print welcome message for the current user.
-                    System.out.println("Welcome " + input);
+                    System.out.println("\n Welcome " + currentUser.getName());
                 } else {
                     // Handle invalid username gracefully
-                    System.out.println("User not found. Please try again.");
+                    System.out.println("\n User not found. Please try again.");
                 }
             }
 
@@ -256,7 +256,7 @@ public class BankingApp {
         if (users.get(recipientName) == user)return " You can not send yourself money from your own account";
 
         // Ask for amount and store the value
-        System.out.print("\n How much would you like to send to " + recipientName + ": ");
+        System.out.print("\n How much would you like to send to " + recipientName + ": $ ");
         if (!scanner.hasNextLine()) return " Amount can not be empty";
         try {
             BigDecimal amount = new BigDecimal(scanner.nextLine().trim());
@@ -264,7 +264,7 @@ public class BankingApp {
                 user.setSavingsBalance(user.getSavingsBalance().subtract(amount));
                 User recipient = users.get(recipientName);
                 recipient.setSavingsBalance(recipient.getSavingsBalance().add(amount));
-                return " " + amount + " sent to " + recipientName;
+                return " $" + amount + " sent to " + recipientName;
             }
             else{
                 return " User can not send an amount greater than the balance in their savings account";
@@ -348,6 +348,6 @@ public class BankingApp {
         }
         user.setInvestmentBalance(user.getInvestmentBalance().add(totalFunds));
 
-        return "All investments totaling $" + totalFunds.setScale(2, RoundingMode.HALF_UP) + " were deposited in your investment account.";
+        return "\n All investments totaling $" + totalFunds.setScale(2, RoundingMode.HALF_UP) + " were deposited in your investment account.";
     }
 }
