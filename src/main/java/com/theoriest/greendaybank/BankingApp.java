@@ -145,8 +145,7 @@ public class BankingApp {
                         break;
                     case 6:
                         // Transfer between accounts (Savings <-> Investment)
-                        transferBetweenAccounts(currentUser, scanner);
-                        System.out.println("Enter amount to transfer");
+                        System.out.println(transferBetweenAccounts(currentUser, scanner));
                         break;
                     case 7:
                         // Withdraw all investments
@@ -291,25 +290,42 @@ public class BankingApp {
         } catch (NumberFormatException ignored) {}
     }
 
-    private static void transferBetweenAccounts(User user, Scanner scanner) {
-        if (!scanner.hasNextLine()) return;
-        String direction = scanner.nextLine().trim();
+    private static String transferBetweenAccounts(User user, Scanner scanner) {
+        System.out.println("1. Transfer from savings to investment");
+        System.out.println("2. Transfer from investment to savings");
+        System.out.println("Enter your choice: ");
 
-        if (!scanner.hasNextLine()) return;
+        if (!scanner.hasNextLine()) return "";
+        String choice = scanner.nextLine().trim();
+
+        System.out.print("Enter the amount to transfer: ");
+
+        if (!scanner.hasNextLine()) return "";
         try {
             BigDecimal amount = new BigDecimal(scanner.nextLine().trim());
-            if (direction.equalsIgnoreCase("SAVINGS_TO_INVESTMENT")) {
-                if (user.getSavingsBalance().compareTo(amount) >= 0 && amount.compareTo(BigDecimal.ZERO) > 0) {
-                    user.setSavingsBalance(user.getSavingsBalance().subtract(amount));
-                    user.setInvestmentBalance(user.getInvestmentBalance().add(amount));
-                }
-            } else if (direction.equalsIgnoreCase("INVESTMENT_TO_SAVINGS")) {
-                if (user.getInvestmentBalance().compareTo(amount) >= 0 && amount.compareTo(BigDecimal.ZERO) > 0) {
-                    user.setInvestmentBalance(user.getInvestmentBalance().subtract(amount));
-                    user.setSavingsBalance(user.getSavingsBalance().add(amount));
-                }
+
+            if (choice.equals("1")) {
+            if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getSavingsBalance().compareTo(amount) >= 0) {
+                user.setSavingsBalance(user.getSavingsBalance().subtract(amount));
+                user.setInvestmentBalance(user.getInvestmentBalance().add(amount));
+                return "\nYou have successfully transferred " + amount + " to investment account.";
+            } else {
+                return "\nInsufficient funds in savings account.";
             }
-        } catch (NumberFormatException ignored) {}
+        } else if (choice.equals("2")) {
+            if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getInvestmentBalance().compareTo(amount) >= 0) {
+                user.setInvestmentBalance(user.getInvestmentBalance().subtract(amount));
+                user.setSavingsBalance(user.getSavingsBalance().add(amount));
+                return "\nYou have successfully transferred " + amount + " to savings account.";
+            } else {
+                return "\nInsufficient funds in investment account. Check balance and try again. ";
+            }
+        } else {
+            return "\nInvalid choice selection.";
+        }
+    } catch (NumberFormatException e) {
+        return "\nInvalid input format.";
+    }
     }
 
     private static String withdrawAllInvestments(User user) {
