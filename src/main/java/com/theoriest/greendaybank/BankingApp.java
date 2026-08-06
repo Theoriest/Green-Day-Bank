@@ -79,11 +79,11 @@ public class BankingApp {
 
         while (running) {
             // Login State
-            // Ask for the user who wants to login
-            System.out.println("Enter your name to log in: ");
 
             User currentUser = null;
             while (currentUser == null) {
+                // Ask for the user who wants to login
+                System.out.println("\nEnter your name to log in: ");
                 if (!scanner.hasNextLine()) {
                     running = false;
                     break;
@@ -92,10 +92,10 @@ public class BankingApp {
                 if (users.containsKey(input)) {
                     currentUser = users.get(input);
                     // Print welcome message for the current user.
-                    System.out.println("Welcome " + input);
+                    System.out.println("\n Welcome " + currentUser.getName());
                 } else {
                     // Handle invalid username gracefully
-                    System.out.println("User not found. Please try again.");
+                    System.out.println("\n User not found. Please try again.");
                 }
             }
 
@@ -152,6 +152,7 @@ public class BankingApp {
                         break;
                     case 8:
                         // Logout
+                        System.out.println(" Goodbye " + currentUser.getName() + " Thank you for using Green Banking App!");
                         sessionActive = false;
                         break;
                     case 9:
@@ -195,23 +196,34 @@ public class BankingApp {
     }
 
     private static void showBalance(User user) {
-        System.out.println("Cash: $" + user.getCash());
-        System.out.println("Savings: $" + user.getSavingsBalance());
-        System.out.println("Investment: $" + user.getInvestmentBalance());
-        System.out.println("Low Risk Fund: $" + user.getFunds().get("LOW_RISK"));
-        System.out.println("Medium Risk Fund: $" + user.getFunds().get("MEDIUM_RISK"));
-        System.out.println("High Risk Fund: $" + user.getFunds().get("HIGH_RISK"));
+        System.out.println("\n Cash: $" + user.getCash());
+        System.out.println(" Savings: $" + user.getSavingsBalance());
+        System.out.println(" Investment: $" + user.getInvestmentBalance());
+        System.out.println(" Low Risk Fund: $" + user.getFunds().get("LOW_RISK"));
+        System.out.println(" Medium Risk Fund: $" + user.getFunds().get("MEDIUM_RISK"));
+        System.out.println(" High Risk Fund: $" + user.getFunds().get("HIGH_RISK"));
     }
 
+    // Brian's Section
     private static void depositMoney(User user, Scanner scanner) {
-        if (!scanner.hasNextLine()) return;
+        System.out.print(" Enter amount to be deposited to savings account: $");
+        System.out.print(""); // Ensure the prompt is displayed before reading input
+        String input = scanner.nextLine().trim();
+
         try {
-            BigDecimal amount = new BigDecimal(scanner.nextLine().trim());
+            BigDecimal amount = new BigDecimal(input);
             if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getCash().compareTo(amount) >= 0) {
                 user.setCash(user.getCash().subtract(amount));
                 user.setSavingsBalance(user.getSavingsBalance().add(amount));
+                System.out.println(" Deposit $" + amount + " Successful!");
+            } else if (user.getCash().compareTo(amount) < 0) {
+                System.out.println(" Insufficient cash balance.");
+            } else {
+                System.out.println(" Amount must be greater than zero. ");
             }
-        } catch (NumberFormatException ignored) {}
+        } catch (NumberFormatException e) {
+            System.out.println(" Invalid amount entered.");
+        }
     }
 
    private static String withdrawMoney(User user, Scanner scanner) {
@@ -257,7 +269,7 @@ public class BankingApp {
         if (users.get(recipientName) == user)return " You can not send yourself money from your own account";
 
         // Ask for amount and store the value
-        System.out.print("\n How much would you like to send to " + recipientName + ": ");
+        System.out.print("\n How much would you like to send to " + recipientName + ": $ ");
         if (!scanner.hasNextLine()) return " Amount can not be empty";
         try {
             BigDecimal amount = new BigDecimal(scanner.nextLine().trim());
@@ -265,7 +277,7 @@ public class BankingApp {
                 user.setSavingsBalance(user.getSavingsBalance().subtract(amount));
                 User recipient = users.get(recipientName);
                 recipient.setSavingsBalance(recipient.getSavingsBalance().add(amount));
-                return " " + amount + " sent to " + recipientName;
+                return " $" + amount + " sent to " + recipientName;
             }
             else{
                 return " User can not send an amount greater than the balance in their savings account";
@@ -275,19 +287,49 @@ public class BankingApp {
         }
     }
 
+    // Brian's Section
     private static void investInFunds(User user, Scanner scanner) {
-        if (!scanner.hasNextLine()) return;
-        String fundType = scanner.nextLine().trim();
-        if (!user.getFunds().containsKey(fundType)) return;
+        String choice;
+       
+        System.out.println("""
+                Available funds:
+                LOW_RISK
+                MEDIUM_RISK
+                HIGH_RISK
+                """);
 
-        if (!scanner.hasNextLine()) return;
-        try {
-            BigDecimal amount = new BigDecimal(scanner.nextLine().trim());
-            if (amount.compareTo(BigDecimal.ZERO) > 0 && user.getInvestmentBalance().compareTo(amount) >= 0) {
-                user.setInvestmentBalance(user.getInvestmentBalance().subtract(amount));
-                user.getFunds().put(fundType, user.getFunds().get(fundType).add(amount));
+        System.out.print(" Enter fund to invest in: ");
+        choice = scanner.nextLine().toUpperCase().trim();
+
+        if(!user.getFunds().containsKey(choice)){
+            System.out.println(" Invalid fund selected.");
+            return;
+        }
+
+        System.out.print(" Enter amount to invest in: $");
+        String value = scanner.nextLine().trim();
+
+        try{
+            BigDecimal amount = new BigDecimal(value);
+            if(amount.compareTo(BigDecimal.ZERO) <= 0) {
+                System.out.println(" Amount must be greater than zero.");
+                return;
             }
-        } catch (NumberFormatException ignored) {}
+                // checking if user has sufficient funds in their Investment Account
+                // or move directly from Savings
+                if(user.getInvestmentBalance().compareTo(amount) >= 0){
+                    user.setInvestmentBalance(user.getInvestmentBalance().subtract(amount));
+                    BigDecimal currentFundBalance = user.getFunds().get(choice);
+                    user.getFunds().put(choice, currentFundBalance.add(amount));
+                    System.out.println(" Successfully Invested $" + amount + " in " + choice + " Fund");
+                }else{
+                    System.out.println(" Insufficient funds in Investment account. Please transfer funds to Investment account first.");
+                }
+
+            }catch (NumberFormatException e){
+            System.out.println(" Invalid amount entered");
+
+        }
     }
 
     private static String transferBetweenAccounts(User user, Scanner scanner) {
@@ -340,6 +382,6 @@ public class BankingApp {
         }
         user.setInvestmentBalance(user.getInvestmentBalance().add(totalFunds));
 
-        return "All investments totaling $" + totalFunds.setScale(2, RoundingMode.HALF_UP) + " were deposited in your investment account.";
+        return "\n All investments totaling $" + totalFunds.setScale(2, RoundingMode.HALF_UP) + " were deposited in your investment account.";
     }
 }
