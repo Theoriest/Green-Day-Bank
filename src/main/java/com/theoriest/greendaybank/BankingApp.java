@@ -80,7 +80,7 @@ public class BankingApp {
         while (running) {
             // Login State
             // Ask for the user who wants to login
-            System.out.println("Enter you name to login: ");
+            System.out.println("Enter your name to log in: ");
 
             User currentUser = null;
             while (currentUser == null) {
